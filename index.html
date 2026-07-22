@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enter One-Time Password - Nvidia NIM Dashboard</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <!-- Mock Nvidia Dashboard Background (Blurred out for visual hierarchy) -->
+  <div class="dashboard-bg">
+    <header class="dashboard-header">
+      <div class="header-left">
+        <span class="logo">NVIDIA</span>
+        <nav class="nav-links">
+          <a href="#" class="active">Models</a>
+          <a href="#">Blueprints</a>
+          <a href="#">GPUs</a>
+          <a href="#">Docs</a>
+        </nav>
+      </div>
+      <div class="header-right">
+        <div class="search-bar">
+          <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16">
+            <path fill="currentColor" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+          <input type="text" placeholder="Search" disabled>
+        </div>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <div class="hero-section">
+        <h1>Run your GPU infrastructure of choice with NVIDIA NIM inference microservices</h1>
+        <p class="subtitle">Select from Hugging Face <span class="badge">Beta</span></p>
+      </div>
+
+      <div class="grid-container">
+        <!-- Mock Card 1 -->
+        <div class="card">
+          <div class="card-tag-top">Run Anywhere</div>
+          <h3>nvidia/nemotron-3-name</h3>
+          <p>Open, efficient MoE model with 1M context, excelling in coding, reasoning, instruction following...</p>
+          <div class="card-tags">
+            <span class="tag">instruction following</span>
+            <span class="tag">long context</span>
+            <span class="tag">+2</span>
+          </div>
+        </div>
+
+        <!-- Mock Card 2 -->
+        <div class="card">
+          <h3>openfold/openfold3</h3>
+          <p>OpenFold3 is a trainable, open-source model matching AlphaFold2's accuracy on protein folding tasks...</p>
+          <div class="card-tags">
+            <span class="tag">biology</span>
+          </div>
+        </div>
+
+        <!-- Mock Card 3 -->
+        <div class="card">
+          <h3>ano-12b-v2-vl</h3>
+          <p>Nemotron Nano 12B v2 VL enables multi-image and video understanding, along with visual Q&A...</p>
+          <div class="card-tags">
+            <span class="tag">language generation</span>
+            <span class="tag">image-to-text</span>
+            <span class="tag">+2</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Dimmed Overlay for modals -->
+  <div class="modal-overlay" id="modalOverlay"></div>
+
+  <!-- OTP Modal Dialog -->
+  <div class="otp-modal" id="otpModal">
+    <button class="close-btn" id="closeOtpModalBtn" aria-label="Close modal">
+      <svg viewBox="0 0 24 24" width="20" height="20">
+        <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+      </svg>
+    </button>
+    
+    <h2>Enter One-Time Password</h2>
+    <p class="modal-desc">We sent a one-time password to the phone number you provided.</p>
+
+    <!-- OTP Input Grid -->
+    <div class="otp-input-container">
+      <input type="text" class="otp-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" placeholder="0">
+      <input type="text" class="otp-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" placeholder="0">
+      <input type="text" class="otp-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" placeholder="0">
+      <span class="otp-divider">-</span>
+      <input type="text" class="otp-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" placeholder="0">
+      <input type="text" class="otp-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" placeholder="0">
+      <input type="text" class="otp-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" placeholder="0">
+    </div>
+
+    <!-- Actions -->
+    <div class="modal-actions">
+      <button class="action-btn outline-btn" id="requestNewCodeBtn">Request New Code</button>
+      <button class="action-btn solid-btn disabled" id="verifyOtpBtn" disabled>Verify</button>
+    </div>
+
+    <!-- Footer static warning info -->
+    <div class="modal-footer">
+      <p>Please wait 90 seconds to receive your OTP. Note that users are limited to 2 requests per minute.</p>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Captcha Modal Dialog -->
+  <div class="captcha-modal" id="captchaModal">
+    <div class="captcha-header">
+      <h3>Security Verification</h3>
+      <p>Complete the captcha below to request a new verification code.</p>
+    </div>
+    
+    <div class="captcha-body">
+      <!-- A premium stylized captcha block -->
+      <div class="captcha-display">
+        <div class="captcha-noise-bg"></div>
+        <div class="captcha-code" id="captchaText">P R O T</div>
+      </div>
+      <button class="captcha-refresh-btn" id="refreshCaptchaBtn" title="Refresh Captcha">
+        <svg viewBox="0 0 24 24" width="16" height="16">
+          <path fill="currentColor" d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+        </svg>
+      </button>
+
+      <div class="captcha-input-group">
+        <input type="text" class="captcha-input" id="captchaInput" placeholder="Enter captcha code" autocomplete="off" spellcheck="false">
+        <div class="error-message" id="captchaError">Incorrect code. Please try again.</div>
+      </div>
+    </div>
+
+    <div class="captcha-actions">
+      <button class="action-btn outline-btn" id="cancelCaptchaBtn">Cancel</button>
+      <button class="action-btn solid-btn" id="submitCaptchaBtn">Submit</button>
+    </div>
+  </div>
+
+  <!-- Toast Notification System -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="index.js"></script>
+</body>
+</html>
